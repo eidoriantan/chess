@@ -124,8 +124,9 @@ export default function App() {
   const field = 'w-full rounded-md border border-line bg-ink px-2 py-1.5 text-sm'
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-4 p-4 lg:flex-row lg:items-start">
-      <section className="flex flex-col gap-3 lg:flex-1">
+    <div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-4 p-4">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+        <section className="flex flex-col gap-3 lg:flex-1">
         <div className="flex items-baseline justify-between">
           <h1 className="text-xl font-extrabold tracking-tight">{meta.White ? `${meta.White} vs ${meta.Black ?? '?'}` : 'Analysis board'}</h1>
           <span className="text-sm text-dim">{meta.Result ?? ''}</span>
@@ -155,9 +156,9 @@ export default function App() {
           <button className={btn} onClick={() => go(positions.length - 1)} disabled={cursor === positions.length - 1} aria-label="Last move">⏭</button>
           <button className={btn} onClick={() => setFlipped((f) => !f)}>Flip board</button>
         </div>
-      </section>
+        </section>
 
-      <aside className="flex flex-col gap-4 lg:w-[24rem]">
+        <aside className="flex flex-col gap-4 lg:w-[24rem]">
         <div className="space-y-3 rounded-lg bg-panel p-4">
           <label className="block text-sm text-dim">Engine
             <select className={`${field} mt-1 text-chalk`} value={engineId} onChange={(e) => setEngineId(e.target.value)}>
@@ -219,7 +220,14 @@ export default function App() {
           {importError && <p className="mt-1 text-xs text-amber">{importError}</p>}
           <button className={`${btn} mt-2`} onClick={importPgn} disabled={!pgn.trim()}>Import game</button>
         </div>
-      </aside>
+        </aside>
+      </div>
+      <footer className="border-t border-line pt-3 text-center text-sm text-dim">
+        © {new Date().getFullYear()}{' '}
+        <a className="text-chalk hover:text-amber" href="https://eidoriantan.com" target="_blank" rel="noreferrer">
+          eidoriantan.com
+        </a>
+      </footer>
     </div>
   )
 }
