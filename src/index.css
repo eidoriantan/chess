@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #10171e;
+  --color-panel: #17222c;
+  --color-line: #2a3a47;
+  --color-chalk: #e8e3d6;
+  --color-dim: #8a99a6;
+  --color-amber: #e9b44c;
+  --font-sans: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+}
+
+body { @apply bg-ink text-chalk font-sans antialiased; }
+button:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--color-amber); outline-offset: 2px; }
