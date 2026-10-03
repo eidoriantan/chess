@@ -14,6 +14,7 @@ export default function App() {
   const [depth, setDepth] = useState(18)
   const [multiPv, setMultiPv] = useState(3)
   const [flipped, setFlipped] = useState(false)
+  const [selectedSquare, setSelectedSquare] = useState<string | null>(null)
   const [positions, setPositions] = useState<Pos[]>([{ fen: START }])
   const [cursor, setCursor] = useState(0)
   const [meta, setMeta] = useState<Record<string, string>>({})
@@ -38,7 +39,10 @@ export default function App() {
 
   useEffect(() => { if (ready) analyze(cur.fen) }, [ready, cur.fen, multiPv, depth, analyze])
 
-  const go = useCallback((i: number) => setCursor(Math.max(0, Math.min(positions.length - 1, i))), [positions.length])
+  const go = useCallback((i: number) => {
+    setCursor(Math.max(0, Math.min(positions.length - 1, i)))
+    setSelectedSquare(null)
+  }, [positions.length])
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (/TEXTAREA|SELECT|INPUT/.test((e.target as HTMLElement).tagName)) return
@@ -51,14 +55,31 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [cursor, go, positions.length])
 
-  const onDrop = ({ sourceSquare, targetSquare }: { sourceSquare: string; targetSquare: string | null }) => {
-    if (!targetSquare) return false
+  const movePiece = useCallback((sourceSquare: string, targetSquare: string) => {
     try {
-      const m = new Chess(cur.fen).move({ from: sourceSquare, to: targetSquare, promotion: 'q' }) // auto-queen
+      const m = new Chess(cur.fen).move({ from: sourceSquare, to: targetSquare, promotion: 'q' })
       setPositions((p) => [...p.slice(0, cursor + 1), { fen: m.after, san: m.san, from: m.from, to: m.to }])
       setCursor(cursor + 1)
+      setSelectedSquare(null)
       return true
     } catch { return false }
+  }, [cur.fen, cursor])
+
+  const onDrop = ({ sourceSquare, targetSquare }: { sourceSquare: string; targetSquare: string | null }) => {
+    if (!targetSquare) return false
+    return movePiece(sourceSquare, targetSquare)
+  }
+
+  const onSquareClick = ({ piece, square }: { piece: { pieceType: string } | null; square: string }) => {
+    if (!selectedSquare) {
+      if (piece?.pieceType[0] === turn) setSelectedSquare(square)
+      return
+    }
+    if (piece?.pieceType[0] === turn) {
+      setSelectedSquare(square)
+      return
+    }
+    movePiece(selectedSquare, square)
   }
 
   const importPgn = () => {
@@ -71,19 +92,20 @@ export default function App() {
         ...h.map((m) => ({ fen: m.after, san: m.san, from: m.from, to: m.to }))
       ])
       setMeta(c.header() as Record<string, string>)
-      setCursor(0); setImportError('')
+      setCursor(0); setSelectedSquare(null); setImportError('')
     } catch (e) { setImportError('Could not read that PGN. Paste the full game text, including the moves.') }
   }
 
-  const reset = () => { setPositions([{ fen: START }]); setCursor(0); setMeta({}) }
+  const reset = () => { setPositions([{ fen: START }]); setCursor(0); setSelectedSquare(null); setMeta({}) }
 
   const best = lines[0]
   const bestUci = best?.pv[0]
   const squareStyles = useMemo(() => {
     const s: Record<string, React.CSSProperties> = {}
     if (cur.from && cur.to) s[cur.from] = s[cur.to] = { background: 'rgba(233,180,76,0.38)' }
+    if (selectedSquare) s[selectedSquare] = { background: 'rgba(233,180,76,0.55)' }
     return s
-  }, [cur.from, cur.to])
+  }, [cur.from, cur.to, selectedSquare])
 
   const rows = useMemo(() => {
     const out: { n: number; w?: number; b?: number }[] = []
@@ -117,6 +139,7 @@ export default function App() {
                 position: cur.fen,
                 boardOrientation: flipped ? 'black' : 'white',
                 onPieceDrop: onDrop,
+                onSquareClick,
                 squareStyles,
                 arrows: bestUci ? [{ startSquare: bestUci.slice(0, 2), endSquare: bestUci.slice(2, 4), color: '#e9b44c' }] : [],
                 darkSquareStyle: { backgroundColor: '#5f7d6b' },
