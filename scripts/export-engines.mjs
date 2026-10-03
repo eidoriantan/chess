@@ -34,6 +34,20 @@ fs.rmSync(out, { recursive: true, force: true })
 fs.rmSync(jsOut, { recursive: true, force: true })
 
 const sha256 = (file) => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')
+const remoteObjectExists = async (objectKey) => {
+  try {
+    const response = await fetch(`${cdn}/${objectKey}`, {
+      method: 'HEAD',
+      headers: { 'cache-control': 'no-cache' },
+    })
+    if (response.ok) return true
+    if (response.status === 404) return false
+    throw new Error(`HTTP ${response.status}`)
+  } catch (error) {
+    throw new Error(`Unable to check R2 object ${objectKey}: ${error.message}`, { cause: error })
+  }
+}
+
 const manifest = []
 for (const e of engines) {
   const r = resolveEngine(e)
@@ -69,6 +83,10 @@ for (const e of engines) {
 
     if (uploadToR2 && !f.toLowerCase().endsWith('.js')) {
       const objectKey = `engines/${e.id}/${f}`
+      if (await remoteObjectExists(objectKey)) {
+        console.log(`[export] skipped existing R2 object ${objectKey}`)
+        continue
+      }
       const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx'
       execFileSync(npx, [
         'wrangler', 'r2', 'object', 'put', `${bucket}/${objectKey}`,

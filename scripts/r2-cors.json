@@ -1,0 +1,10 @@
+[
+  {
+    "allowed": {
+      "origins": ["*"],
+      "methods": ["GET", "HEAD"],
+      "headers": ["*"]
+    },
+    "maxAgeSeconds": 86400
+  }
+]
