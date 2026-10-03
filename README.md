@@ -13,6 +13,14 @@ R2_BUCKET_NAME=your-r2-bucket
 VITE_ENGINE_CDN=https://your-public-r2-domain
 ```
 
-The build uses the Wrangler CLI's existing authentication. `VITE_ENGINE_CDN` is
-only used by production bundles; local development always loads WASM from
-`/engines`.
+The build uses the Wrangler CLI's existing authentication. Configure the R2
+bucket's CORS policy once before the first deployment:
+
+```sh
+npx wrangler r2 bucket cors set "$R2_BUCKET_NAME" \
+  --file scripts/r2-cors.json
+```
+
+`VITE_ENGINE_CDN` is only used by production bundles; local development always
+loads WASM from `/engines`. Cloudflare serves the required COOP/COEP headers
+from `public/_headers`, enabling multi-threaded engines in production.
