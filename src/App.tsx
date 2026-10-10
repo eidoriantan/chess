@@ -125,10 +125,10 @@ export default function App() {
 
   return (
     <div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-4 p-4">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+      <main className="flex flex-col gap-4 lg:flex-row lg:items-start">
         <section className="flex flex-col gap-3 lg:flex-1">
         <div className="flex items-baseline justify-between">
-          <h1 className="text-xl font-extrabold tracking-tight">{meta.White ? `${meta.White} vs ${meta.Black ?? '?'}` : 'Analysis board'}</h1>
+          <h1 className="text-xl font-extrabold tracking-tight">{meta.White ? `${meta.White} vs ${meta.Black ?? '?'}` : 'Chess analysis board'}</h1>
           <span className="text-sm text-dim">{meta.Result ?? ''}</span>
         </div>
         <div className="mx-auto flex w-full gap-2" style={{ maxWidth: 'min(100%, calc(100vh - 11rem))' }}>
@@ -221,7 +221,7 @@ export default function App() {
           <button className={`${btn} mt-2`} onClick={importPgn} disabled={!pgn.trim()}>Import game</button>
         </div>
         </aside>
-      </div>
+      </main>
       <footer className="border-t border-line pt-3 text-center text-sm text-dim">
         © {new Date().getFullYear()}{' '}
         <a className="text-chalk hover:text-amber" href="https://eidoriantan.com" target="_blank" rel="noreferrer">

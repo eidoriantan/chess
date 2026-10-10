@@ -4,6 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <title>Chess Analysis Board – Free Stockfish Engine in Your Browser</title>
+  <meta name="description" content="Analyze chess games for free with Stockfish 11, 17 and 19 running locally in your browser. Import a PGN, step through moves and see the best lines and evaluation instantly." />
+  <link rel="canonical" href="%SITE_URL%/" />
+  <meta name="theme-color" content="#10171e" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Chess Analysis" />
+  <meta property="og:title" content="Chess Analysis Board – Free Stockfish Engine in Your Browser" />
+  <meta property="og:description" content="Import a PGN or play moves and get Stockfish evaluations and best lines, computed entirely in your browser." />
+  <meta property="og:url" content="%SITE_URL%/" />
+  <meta property="og:image" content="%SITE_URL%/og-image.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Chess Analysis: free Stockfish analysis in your browser, shown beside a chessboard with the engine's best move" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="shortcut icon" href="/favicon.ico" />
@@ -12,12 +29,32 @@
   <link rel="manifest" href="/site.webmanifest" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet" crossorigin />
-  <title>Chess analysis</title>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Chess Analysis",
+    "url": "%SITE_URL%/",
+    "description": "A free, browser-based chess analysis board powered by Stockfish WASM engines. Import PGN games and see engine evaluations and best lines.",
+    "applicationCategory": "GameApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires JavaScript and WebAssembly",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Person", "name": "Adriane Justine Tan", "url": "https://eidoriantan.com" }
+  }
+  </script>
 </head>
 
 <body>
   <div id="root"></div>
+  <noscript>
+    <h1>Chess Analysis Board</h1>
+    <p>A free chess analysis board that runs Stockfish in your browser. Import a PGN, step through the moves and see the engine's evaluation and best lines. JavaScript is required to use it.</p>
+  </noscript>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>

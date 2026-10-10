@@ -11,7 +11,7 @@ const isolation = {
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '')
-  const hostname = env.VITE_SITE_URL
+  const hostname = env.VITE_SITE_URL?.replace(/\/+$/, '')
 
   if (!hostname) {
     throw new Error('VITE_SITE_URL must be set to generate the sitemap')
@@ -21,6 +21,10 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       tailwindcss(),
+      {
+        name: 'site-url',
+        transformIndexHtml: (html) => html.replaceAll('%SITE_URL%', hostname),
+      },
       Sitemap({
         hostname,
         generateRobotsTxt: true,
